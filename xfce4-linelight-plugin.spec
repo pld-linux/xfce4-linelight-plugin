@@ -11,6 +11,8 @@ URL:		http://goodies.xfce.org/projects/panel-plugins/xfce4-linelight-plugin
 BuildRequires:	libxfcegui4-devel >= 4.4.0
 BuildRequires:	xfce4-dev-tools >= 4.4.0
 BuildRequires:	xfce4-panel-devel >= 4.4.0
+Requires(post,postun):	gtk-update-icon-cache
+Requires(post,postun):	hicolor-icon-theme
 Requires:	xfce4-panel >= 4.4.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
