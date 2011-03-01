@@ -1,0 +1,127 @@
+diff -ur xfce4-linelight-plugin-0.1.6-orig/config.h.in xfce4-linelight-plugin-0.1.6/config.h.in
+--- xfce4-linelight-plugin-0.1.6-orig/config.h.in	2008-07-24 21:33:47.000000000 +0200
++++ xfce4-linelight-plugin-0.1.6/config.h.in	2011-03-01 13:01:59.000000000 +0100
+@@ -49,6 +49,9 @@
+ /* Define to the one symbol short name of this package. */
+ #undef PACKAGE_TARNAME
+ 
++/* Define to the home page for this package. */
++#undef PACKAGE_URL
++
+ /* Define to the version of this package. */
+ #undef PACKAGE_VERSION
+ 
+diff -ur xfce4-linelight-plugin-0.1.6-orig/configure.in xfce4-linelight-plugin-0.1.6/configure.in
+--- xfce4-linelight-plugin-0.1.6-orig/configure.in	2011-03-01 11:20:29.383067640 +0100
++++ xfce4-linelight-plugin-0.1.6/configure.in	2011-03-01 13:01:56.650702738 +0100
+@@ -20,7 +20,7 @@
+ dnl XDT_I18N([de])
+ 
+ dnl Check for required packages
+-XDT_CHECK_PACKAGE([LIBXFCEGUI4], [libxfcegui4-1.0], [4.4.0])
++XDT_CHECK_PACKAGE([LIBXFCE4UI], [libxfce4ui-1], [4.8.0])
+ XDT_CHECK_PACKAGE([LIBXFCE4PANEL], [libxfce4panel-1.0], [4.4.0])
+ XDT_CHECK_PACKAGE([LIBGIO], [gio-2.0], [2.18.0])
+ XDT_CHECK_PACKAGE([LIBGIOUNIX], [gio-unix-2.0], [2.16.0])
+diff -ur xfce4-linelight-plugin-0.1.6-orig/panel-plugin/linelight.c xfce4-linelight-plugin-0.1.6/panel-plugin/linelight.c
+--- xfce4-linelight-plugin-0.1.6-orig/panel-plugin/linelight.c	2011-03-01 11:20:29.394067640 +0100
++++ xfce4-linelight-plugin-0.1.6/panel-plugin/linelight.c	2011-03-01 13:01:56.651703238 +0100
+@@ -19,7 +19,7 @@
+ 
+ #include "linelight.h"
+ 
+-#include <libxfcegui4/libxfcegui4.h>
++#include <libxfce4ui/libxfce4ui.h>
+ #include <libxfce4panel/libxfce4panel.h>
+ 
+ #include <gio/gio.h>
+diff -ur xfce4-linelight-plugin-0.1.6-orig/panel-plugin/main.c xfce4-linelight-plugin-0.1.6/panel-plugin/main.c
+--- xfce4-linelight-plugin-0.1.6-orig/panel-plugin/main.c	2011-03-01 11:20:29.395067640 +0100
++++ xfce4-linelight-plugin-0.1.6/panel-plugin/main.c	2011-03-01 14:39:30.993510018 +0100
+@@ -31,7 +31,7 @@
+ #include <gio/gio.h>
+ #include <gio/gdesktopappinfo.h>
+ 
+-#include <libxfcegui4/libxfcegui4.h>
++#include <libxfce4ui/libxfce4ui.h>
+ #include <libxfce4panel/libxfce4panel.h>
+ 
+ #include "linelight.h"
+@@ -201,7 +201,7 @@
+ 
+     if (search_process == NULL)
+     {
+-        xfce_err("locate clould not be executed!");
++        xfce_dialog_show_error (NULL, NULL, "locate clould not be executed!");
+         return NULL;
+     }
+ 
+@@ -315,7 +315,7 @@
+ 
+     if (search_process == NULL)
+     {
+-        xfce_err("locate clould not be executed!");
++        xfce_dialog_show_error (NULL, NULL, "locate clould not be executed!");
+         return NULL;
+     }
+     system("rm -r /tmp/xfce4-linelight/");
+@@ -352,7 +352,7 @@
+ 
+     if (search_process == NULL)
+     {
+-        xfce_err("locate clould not be executed!");
++        xfce_dialog_show_error (NULL, NULL, "locate clould not be executed!");
+         return NULL;
+     }
+ 
+@@ -487,17 +487,18 @@
+ 
+ static void show_about_cb(XfcePanelPlugin *plugin, gpointer userdata)
+ {
+-    GtkWidget *dialog;
+-    XfceAboutInfo *info = xfce_about_info_new("xfce4-linelight-plugin", VERSION, _("A Spotlight-like frontend for locate search."), XFCE_COPYRIGHT_TEXT("2008", "Michael Pfeuti"), XFCE_LICENSE_GPL);
+-
+-    xfce_about_info_set_homepage(info,"http://www.ganymede.ch");
+-
+-    dialog = xfce_about_dialog_new_with_values(NULL, info, NULL);
+-    g_signal_connect(G_OBJECT(dialog), "response", G_CALLBACK(gtk_widget_destroy),NULL);
+-    gtk_window_set_title(GTK_WINDOW(dialog), "xfce4-linelight");
+-    gtk_dialog_run(GTK_DIALOG(dialog));
+-
+-    xfce_about_info_free(info);
++#if !GTK_CHECK_VERSION (2, 18, 0)
++    gtk_about_dialog_set_email_hook (exo_gtk_url_about_dialog_hook, NULL, NULL);
++    gtk_about_dialog_set_url_hook (exo_gtk_url_about_dialog_hook, NULL, NULL);
++#endif
++    gtk_show_about_dialog(NULL,
++                          "program-name", "xfce4-linelight",
++                          "license", xfce_get_license_text (XFCE_LICENSE_TEXT_GPL),
++                          "version", VERSION,
++                          "comments", _("A Spotlight-like frontend for locate search."),
++                          "website", "http://www.ganymede.ch",
++                          "copyright", "2008 Michael Pfeuti",
++			  NULL);
+ }
+ 
+ /*
+diff -ur xfce4-linelight-plugin-0.1.6-orig/panel-plugin/Makefile.am xfce4-linelight-plugin-0.1.6/panel-plugin/Makefile.am
+--- xfce4-linelight-plugin-0.1.6-orig/panel-plugin/Makefile.am	2011-03-01 11:20:29.396067640 +0100
++++ xfce4-linelight-plugin-0.1.6/panel-plugin/Makefile.am	2011-03-01 13:01:56.653704238 +0100
+@@ -11,7 +11,7 @@
+ 
+ xfce4_linelight_plugin_CFLAGS =						\
+ 		-DPACKAGE_LOCALE_DIR=\"$(localedir)\"			\
+-		$(LIBXFCEGUI4_CFLAGS)					\
++		$(LIBXFCE4UI_CFLAGS)					\
+ 		$(LIBXFCE4PANEL_CFLAGS)					\
+ 		$(LIBGIO_CFLAGS)					\
+ 		$(LIBGIOUNIX_CFLAGS)					\
+@@ -20,7 +20,7 @@
+ 
+ 
+ xfce4_linelight_plugin_LDFLAGS =					\
+-		$(LIBXFCEGUI4_LIBS)					\
++		$(LIBXFCE4UI_LIBS)					\
+ 		$(LIBXFCE4PANEL_LIBS)					\
+ 		$(LIBGIO_LIBS)						\
+ 		$(LIBGIOUNIX_LIBS)					\
