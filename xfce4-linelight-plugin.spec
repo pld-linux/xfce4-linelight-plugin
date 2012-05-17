@@ -10,18 +10,19 @@ Source0:	http://archive.xfce.org/src/panel-plugins/xfce4-linelight-plugin/0.1/%{
 Patch0:		includes.patch
 Patch1:		%{name}-gio.patch
 Patch2:		%{name}-ui.patch
+Patch3:		%{name}-xfcerc.patch
 URL:		http://goodies.xfce.org/projects/panel-plugins/xfce4-linelight-plugin
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	glib2-devel >= 1:2.18.0
 BuildRequires:	libtool
-BuildRequires:	libxfce4ui-devel >= 4.8.0
+BuildRequires:	libxfce4ui-devel >= 4.10.0
 BuildRequires:	rpmbuild(macros) >= 1.601
-BuildRequires:	xfce4-dev-tools >= 4.4.0
-BuildRequires:	xfce4-panel-devel >= 4.4.0
+BuildRequires:	xfce4-dev-tools >= 4.10.0
+BuildRequires:	xfce4-panel-devel >= 4.10.0
 Requires:	gtk-update-icon-cache
 Requires:	hicolor-icon-theme
-Requires:	xfce4-panel >= 4.4.0
+Requires:	xfce4-panel >= 4.10.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -35,6 +36,7 @@ Prosty interfejs do wyszukiwania przy pomocy locate.
 %patch0 -p1
 %patch1 -p0
 %patch2 -p1
+%patch3 -p0
 
 %build
 %{__libtoolize}
