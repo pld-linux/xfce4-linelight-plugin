@@ -2,7 +2,7 @@ Summary:	Simple frontend for the locate search
 Summary(pl.UTF-8):	Prosty interfejs do wyszukiwania przy pomocy locate
 Name:		xfce4-linelight-plugin
 Version:	0.1.6
-Release:	8
+Release:	9
 License:	GPL v2
 Group:		X11/Applications
 Source0:	http://archive.xfce.org/src/panel-plugins/xfce4-linelight-plugin/0.1/%{name}-%{version}.tar.bz2
@@ -67,6 +67,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog README
-%attr(755,root,root) %{_libdir}/xfce4/panel-plugins/xfce4-linelight-plugin
+%attr(755,root,root) %{_libexecdir}/xfce4/panel-plugins/xfce4-linelight-plugin
 %{_datadir}/xfce4/panel-plugins/linelight.desktop
 %{_iconsdir}/hicolor/*/apps/*
